@@ -1,0 +1,90 @@
+version: '3.5'
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    networks:
+      - indahash
+
+  mongodb:
+    container_name: mongodb
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_data:/data/db'
+    command: [mongod, --setParameter, failIndexKeyTooLong=false]
+    ports:
+      - "27017:27017"
+    env_file:
+      - .env
+    networks:
+      - indahash
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    networks:
+      - indahash
+
+  worker:
+    build:
+      context: .
+    container_name: worker
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    volumes:
+      - .:/home/appuser/blog_api
+      - bundle_cache:/home/appuser/bundle
+    networks:
+      - indahash
+    stdin_open: true
+    tty: true
+
+  app:
+    container_name: app
+    build:
+      context: .
+    volumes:
+      - .:/home/appuser/blog_api
+      - bundle_cache:/home/appuser/bundle
+    ports:
+      - "3000:3000"
+    command: bash -c "./docker-entrypoint.sh"
+    networks:
+      - indahash
+    stdin_open: true
+    tty: true
+
+  spring:
+    container_name: spring
+    build:
+      context: .
+    volumes:
+      - .:/home/appuser/blog_api
+      - bundle_cache:/home/appuser/bundle
+    restart: always
+    command: bash -c "rm -rf ./tmp/spring.sock && spring server"
+    networks:
+      - indahash
+    # This ensures that the pid namespace is shared between the host
+    # and the container. It's not necessary to be able to run spring
+    # commands, but it is necessary for "spring status" and "spring stop"
+    # to work properly.
+    pid: host
+
+networks:
+  indahash:
+
+volumes:
+  bundle_cache:
+    external: true
+  mysql_data:
+    external: true
+  mongo_data:
+    external: true
