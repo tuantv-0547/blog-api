@@ -1,24 +1,13 @@
-# README
+# Blog API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Blog API is a project of 3S's team. The main purpose is for everyone the team to share knowledge technical and life.
 
-Things you may want to cover:
+## Development
 
-* Ruby version
+Development environment requires [docker](https://www.docker.com/) and [docker-compose](https://docs.docker.com/compose/). Please install this before you start.
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```bash
+cp .env.example .env
+docker-compose build
+docker-compose up
+```
