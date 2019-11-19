@@ -1,0 +1,29 @@
+version: "3.3"
+
+services:
+  db:
+    image: mysql:5.7.28
+    ports:
+      - 3306:3306
+    volumes:
+      - db-data:/var/lib/mysql
+    env_file: .env
+    restart: always
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: scripts/entrypoint
+    volumes:
+      - .:/app
+      - bundle:/bundle #map bundle folder in computer with bundle folder in container
+    ports:
+      - "3000:3000"
+    links:
+      - db
+    env_file: .env
+    stdin_open: true
+    tty: true
+volumes:
+  bundle:
+  db-data:
