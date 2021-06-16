@@ -8,7 +8,7 @@ gem "bootsnap", ">= 1.1.0", require: false
 gem "dotenv-rails"
 gem "mysql2"
 gem "puma", "~> 3.11"
-gem "rails", "~> 6.0.0"
+gem "rails", "~> 6.0.4"
 gem "rubocop", "~> 0.66.0", require: false
 gem "sass-rails", "~> 5.0"
 gem "turbolinks", "~> 5"
